@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Feedback Analyzer</title>
+</head>
+<body>
+    <h2>Enter your feedback:</h2>
+    <form method="post">
+        <textarea name="feedback" rows="4" cols="50" required></textarea><br><br>
+        <input type="submit" value="Analyze">
+    </form>
+
+    {% if sentiment %}
+        <h3>Sentiment: {{ sentiment }} (Score: {{ score }})</h3>
+    {% endif %}
+</body>
+</html>
+
+
