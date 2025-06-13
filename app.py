@@ -6,13 +6,16 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-CSV_FILE = "sentiment_data.csv"
+CSV_FILE = "local_s3_bucket/sentiment_data.csv"
+
+# Ensure the local_s3_bucket directory exists
+os.makedirs("local_s3_bucket", exist_ok=True)
 
 # Create CSV file with headers if it doesn't exist
 if not os.path.exists(CSV_FILE):
     with open(CSV_FILE, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(["timestamp", "feedback", "sentiment", "score"])
+        writer.writerow(["timestamp", "date", "month", "feedback", "sentiment", "score"])
 
 def analyze_sentiment(text):
     blob = TextBlob(text)
@@ -21,10 +24,13 @@ def analyze_sentiment(text):
     return sentiment, score
 
 def save_to_csv(feedback, sentiment, score):
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    now = datetime.now()
+    timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
+    date = now.date().isoformat()
+    month = now.strftime("%Y-%m")
     with open(CSV_FILE, mode='a', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([timestamp, feedback, sentiment, score])
+        writer.writerow([timestamp, date, month, feedback, sentiment, score])
 
 @app.route("/", methods=["GET", "POST"])
 def index():
